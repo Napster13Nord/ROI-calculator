@@ -1,8 +1,8 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export const LanguageSwitch: React.FC = () => {
+export const LanguageSwitch = () => {
   const { language, setLanguage } = useLanguage();
 
   return (

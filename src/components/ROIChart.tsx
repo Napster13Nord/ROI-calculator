@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Calendar, BarChart } from 'lucide-react';
@@ -9,7 +9,7 @@ interface ROIChartProps {
   growthPercentage: number;
 }
 
-export const ROIChart: React.FC<ROIChartProps> = ({ monthlyRevenue, systemPrice, growthPercentage }) => {
+export const ROIChart = ({ monthlyRevenue, systemPrice, growthPercentage }: ROIChartProps) => {
   const monthlyIncrease = (monthlyRevenue * growthPercentage) / 100;
   
   // Gerar dados para 24 meses
@@ -42,7 +42,7 @@ export const ROIChart: React.FC<ROIChartProps> = ({ monthlyRevenue, systemPrice,
     return `${value > 0 ? '+' : ''}${value.toFixed(0)}%`;
   };
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

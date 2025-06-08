@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calculator, TrendingUp, Target, Zap, Crown, Star, ArrowUp, CheckCircle, Rocket, Timer, TrendingDown } from 'lucide-react';
+import { Calculator, TrendingUp, Target, Crown, ArrowUp, CheckCircle, Timer, TrendingDown } from 'lucide-react';
 import { useLanguage } from './contexts/LanguageContext';
 import { LanguageSwitch } from './components/LanguageSwitch';
 
@@ -71,12 +71,7 @@ const App = () => {
     }
   }, [monthlyRevenue, systemPrice, growthPercentage]);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-PT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(value);
-  };
+
 
   const formatPercentage = (value: number) => {
     return `${value > 0 ? '+' : ''}${value.toFixed(0)}%`;
@@ -98,21 +93,7 @@ const App = () => {
     return 'neon-gradient-orange';
   };
 
-  const getNeonBorder = (roi: number) => {
-    if (roi >= 1000) return 'neon-border-green';
-    if (roi >= 500) return 'neon-border-blue';
-    if (roi >= 200) return 'neon-border-purple';
-    if (roi >= 0) return 'neon-border-orange';
-    return 'neon-border-orange';
-  };
 
-  const getAccentColor = (roi: number) => {
-    if (roi >= 1000) return 'bg-gradient-to-r from-emerald-500 to-green-600';
-    if (roi >= 500) return 'bg-gradient-to-r from-blue-500 to-indigo-600';
-    if (roi >= 200) return 'bg-gradient-to-r from-purple-500 to-violet-600';
-    if (roi >= 0) return 'bg-gradient-to-r from-orange-500 to-red-600';
-    return 'bg-gradient-to-r from-red-500 to-rose-600';
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
