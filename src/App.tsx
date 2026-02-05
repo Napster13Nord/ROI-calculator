@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calculator, TrendingUp, Target, Crown, ArrowUp, CheckCircle, Timer, TrendingDown } from 'lucide-react';
+import { Calculator, TrendingUp, Target, Crown, ArrowUp, CheckCircle, Timer, TrendingDown, MessageCircle } from 'lucide-react';
 import { useLanguage } from './contexts/LanguageContext';
 import { LanguageSwitch } from './components/LanguageSwitch';
 
@@ -647,6 +647,24 @@ const App = () => {
               📅 {t('scheduleConsultation')}
             </h3>
             <div style={{width:'100%', height:'600px', overflow:'auto'}} id="my-cal-inline-revenue-recovery-potential"></div>
+
+            {/* WhatsApp Alternative */}
+            <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-700">
+              <p className="text-center text-slate-600 dark:text-slate-400 mb-4">
+                {t('preferWhatsApp')}
+              </p>
+              <motion.a
+                href="https://wa.me/3584578337530"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center justify-center gap-3 mx-auto max-w-md bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <MessageCircle className="h-6 w-6" />
+                <span>{t('contactWhatsApp')}</span>
+              </motion.a>
+            </div>
           </div>
         </motion.div>
 
