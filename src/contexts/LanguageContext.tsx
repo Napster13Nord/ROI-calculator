@@ -67,6 +67,9 @@ const translations = {
     doneForYouSetup: 'Setup 100% done-for-you',
     payIfResults: 'Só paga se gerar resultados',
 
+    // Calendar
+    scheduleConsultation: 'Agende uma Consulta Gratuita',
+
     // Footer
     footerText: 'Mais de 100+ lojas online já aumentaram suas vendas com nossos email flows',
 
@@ -147,6 +150,9 @@ const translations = {
     freeTrialDays: '30-day free trial',
     doneForYouSetup: '100% done-for-you setup',
     payIfResults: 'Only pay if it generates results',
+
+    // Calendar
+    scheduleConsultation: 'Schedule a Free Consultation',
 
     // Footer
     footerText: 'Over 100+ online stores have already increased their sales with our email flows',

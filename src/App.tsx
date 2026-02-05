@@ -71,6 +71,58 @@ const App = () => {
     }
   }, [monthlyRevenue, systemPrice, growthPercentage]);
 
+  useEffect(() => {
+    // Load Cal.com embed script
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.innerHTML = `
+      (function (C, A, L) {
+        let p = function (a, ar) { a.q.push(ar); };
+        let d = C.document;
+        C.Cal = C.Cal || function () {
+          let cal = C.Cal;
+          let ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            d.head.appendChild(d.createElement("script")).src = A;
+            cal.loaded = true;
+          }
+          if (ar[0] === L) {
+            const api = function () { p(api, arguments); };
+            const namespace = ar[1];
+            api.q = api.q || [];
+            if(typeof namespace === "string"){
+              cal.ns[namespace] = cal.ns[namespace] || api;
+              p(cal.ns[namespace], ar);
+              p(cal, ["initNamespace", namespace]);
+            } else p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(window, "https://app.cal.com/embed/embed.js", "init");
+
+      Cal("init", "revenue-recovery-potential", {origin:"https://app.cal.com"});
+
+      Cal.ns["revenue-recovery-potential"]("inline", {
+        elementOrSelector:"#my-cal-inline-revenue-recovery-potential",
+        config: {"layout":"month_view","useSlotsViewOnSmallScreen":"true"},
+        calLink: "andre-lopes/revenue-recovery-potential",
+      });
+
+      Cal.ns["revenue-recovery-potential"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+    `;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script on component unmount
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
 
 
   const formatPercentage = (value: number) => {
@@ -580,6 +632,21 @@ const App = () => {
                 </span>
               </motion.div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* Calendar Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.1 }}
+          className="mt-12 max-w-7xl mx-auto"
+        >
+          <div className="premium-card p-8 rounded-2xl shadow-2xl">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
+              📅 {t('scheduleConsultation')}
+            </h3>
+            <div style={{width:'100%', height:'600px', overflow:'auto'}} id="my-cal-inline-revenue-recovery-potential"></div>
           </div>
         </motion.div>
 
