@@ -69,6 +69,8 @@ const translations = {
 
     // Calendar
     scheduleConsultation: 'Agende uma Consulta Gratuita',
+    preferWhatsApp: 'Prefere conversar pelo WhatsApp?',
+    contactWhatsApp: 'Falar no WhatsApp',
 
     // Footer
     footerText: 'Mais de 100+ lojas online já aumentaram suas vendas com nossos email flows',
@@ -153,6 +155,8 @@ const translations = {
 
     // Calendar
     scheduleConsultation: 'Schedule a Free Consultation',
+    preferWhatsApp: 'Prefer to chat on WhatsApp?',
+    contactWhatsApp: 'Contact on WhatsApp',
 
     // Footer
     footerText: 'Over 100+ online stores have already increased their sales with our email flows',
