@@ -178,33 +178,55 @@ export default function SimpleROICalculator(props: Props) {
                 {/* Input Section */}
                 <div
                     style={{
-                        background: "rgba(30, 30, 40, 0.6)",
-                        backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(139, 92, 246, 0.2)",
-                        borderRadius: "24px",
+                        background: "linear-gradient(135deg, rgba(20, 20, 30, 0.9), rgba(30, 30, 40, 0.8))",
+                        backdropFilter: "blur(24px)",
+                        border: "1px solid rgba(139, 92, 246, 0.3)",
+                        borderRadius: "20px",
                         padding: "2rem",
+                        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
                     }}
                 >
-                    <h3
+                    <div
                         style={{
-                            fontSize: "20px",
-                            fontWeight: 700,
-                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
                             marginBottom: "2rem",
+                            paddingBottom: "1rem",
+                            borderBottom: "1px solid rgba(139, 92, 246, 0.2)",
                         }}
                     >
-                        {t.storeData}
-                    </h3>
+                        <div
+                            style={{
+                                width: "8px",
+                                height: "32px",
+                                background: "linear-gradient(180deg, #8b5cf6, #a855f7)",
+                                borderRadius: "4px",
+                            }}
+                        />
+                        <h3
+                            style={{
+                                fontSize: "18px",
+                                fontWeight: 700,
+                                color: "#fff",
+                                margin: 0,
+                            }}
+                        >
+                            {t.storeData}
+                        </h3>
+                    </div>
 
                     {/* Revenue Input */}
-                    <div style={{ marginBottom: "1.5rem" }}>
+                    <div style={{ marginBottom: "1.75rem" }}>
                         <label
                             style={{
                                 display: "block",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "rgba(255, 255, 255, 0.7)",
-                                marginBottom: "0.5rem",
+                                fontSize: "13px",
+                                fontWeight: 600,
+                                color: "rgba(139, 92, 246, 0.9)",
+                                marginBottom: "8px",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.5px",
                             }}
                         >
                             {t.monthlyRevenue}
@@ -213,11 +235,12 @@ export default function SimpleROICalculator(props: Props) {
                             <span
                                 style={{
                                     position: "absolute",
-                                    left: "16px",
-                                    top: "16px",
-                                    fontSize: "18px",
+                                    left: "18px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    fontSize: "20px",
                                     fontWeight: 700,
-                                    color: "rgba(255, 255, 255, 0.5)",
+                                    color: "#8b5cf6",
                                 }}
                             >
                                 €
@@ -231,28 +254,41 @@ export default function SimpleROICalculator(props: Props) {
                                 placeholder={t.placeholder}
                                 style={{
                                     width: "100%",
-                                    padding: "16px 16px 16px 44px",
-                                    background: "rgba(0, 0, 0, 0.3)",
-                                    border: "1px solid rgba(139, 92, 246, 0.3)",
+                                    padding: "18px 18px 18px 50px",
+                                    background: "rgba(0, 0, 0, 0.4)",
+                                    border: "1px solid rgba(139, 92, 246, 0.4)",
                                     borderRadius: "12px",
                                     fontSize: "18px",
                                     fontWeight: 600,
                                     color: "#fff",
                                     outline: "none",
+                                    transition: "all 0.3s",
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.border = "1px solid #8b5cf6"
+                                    e.target.style.boxShadow =
+                                        "0 0 0 3px rgba(139, 92, 246, 0.1)"
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.border =
+                                        "1px solid rgba(139, 92, 246, 0.4)"
+                                    e.target.style.boxShadow = "none"
                                 }}
                             />
                         </div>
                     </div>
 
                     {/* Package Selection */}
-                    <div style={{ marginBottom: "1.5rem" }}>
+                    <div style={{ marginBottom: "1.75rem" }}>
                         <label
                             style={{
                                 display: "block",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "rgba(255, 255, 255, 0.7)",
-                                marginBottom: "0.5rem",
+                                fontSize: "13px",
+                                fontWeight: 600,
+                                color: "rgba(139, 92, 246, 0.9)",
+                                marginBottom: "8px",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.5px",
                             }}
                         >
                             {t.emailPackage}
@@ -266,47 +302,81 @@ export default function SimpleROICalculator(props: Props) {
                             }}
                         >
                             {[
-                                { price: 300, name: t.essential },
-                                { price: 500, name: t.professional },
-                                { price: 700, name: t.complete },
-                            ].map(({ price, name }) => (
+                                { price: 300, name: t.essential, automations: 3 },
+                                { price: 500, name: t.professional, automations: 5 },
+                                { price: 700, name: t.complete, automations: 8 },
+                            ].map(({ price, name, automations }) => (
                                 <button
                                     key={price}
                                     onClick={() => setSystemPrice(price)}
                                     className="package-btn"
                                     style={{
-                                        padding: "1.25rem",
+                                        position: "relative",
+                                        padding: "1rem",
                                         background:
                                             systemPrice === price
                                                 ? "linear-gradient(135deg, #8b5cf6, #a855f7)"
                                                 : "rgba(0, 0, 0, 0.3)",
                                         border:
                                             systemPrice === price
-                                                ? "2px solid #8b5cf6"
-                                                : "1px solid rgba(139, 92, 246, 0.3)",
+                                                ? "2px solid #a855f7"
+                                                : "1px solid rgba(139, 92, 246, 0.2)",
                                         borderRadius: "12px",
                                         cursor: "pointer",
                                         textAlign: "center",
                                         transition: "all 0.3s",
+                                        overflow: "hidden",
                                     }}
                                 >
+                                    {systemPrice === price && (
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                right: 0,
+                                                background: "rgba(255, 255, 255, 0.2)",
+                                                color: "#fff",
+                                                fontSize: "10px",
+                                                fontWeight: 700,
+                                                padding: "4px 8px",
+                                                borderBottomLeftRadius: "8px",
+                                            }}
+                                        >
+                                            ✓
+                                        </div>
+                                    )}
                                     <div
                                         style={{
-                                            fontSize: "22px",
+                                            fontSize: "11px",
+                                            fontWeight: 600,
+                                            color:
+                                                systemPrice === price
+                                                    ? "rgba(255, 255, 255, 0.9)"
+                                                    : "rgba(139, 92, 246, 0.8)",
+                                            marginBottom: "6px",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.5px",
+                                        }}
+                                    >
+                                        {automations} Automations
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: "24px",
                                             fontWeight: 700,
                                             color: "#fff",
-                                            marginBottom: "4px",
+                                            marginBottom: "2px",
                                         }}
                                     >
                                         €{price}
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "13px",
+                                            fontSize: "12px",
                                             color:
                                                 systemPrice === price
-                                                    ? "rgba(255, 255, 255, 0.9)"
-                                                    : "rgba(255, 255, 255, 0.6)",
+                                                    ? "rgba(255, 255, 255, 0.8)"
+                                                    : "rgba(255, 255, 255, 0.5)",
                                             fontWeight: 500,
                                         }}
                                     >
@@ -324,27 +394,37 @@ export default function SimpleROICalculator(props: Props) {
                                 display: "flex",
                                 justifyContent: "space-between",
                                 alignItems: "center",
-                                marginBottom: "0.75rem",
+                                marginBottom: "12px",
                             }}
                         >
                             <label
                                 style={{
-                                    fontSize: "14px",
-                                    fontWeight: 500,
-                                    color: "rgba(255, 255, 255, 0.7)",
+                                    fontSize: "13px",
+                                    fontWeight: 600,
+                                    color: "rgba(139, 92, 246, 0.9)",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.5px",
                                 }}
                             >
                                 {t.salesIncrease}
                             </label>
-                            <span
+                            <div
                                 style={{
-                                    fontSize: "22px",
-                                    fontWeight: 700,
-                                    color: "#8b5cf6",
+                                    background: "linear-gradient(135deg, #8b5cf6, #a855f7)",
+                                    padding: "6px 16px",
+                                    borderRadius: "20px",
                                 }}
                             >
-                                {growthPercentage}%
-                            </span>
+                                <span
+                                    style={{
+                                        fontSize: "18px",
+                                        fontWeight: 700,
+                                        color: "#fff",
+                                    }}
+                                >
+                                    {growthPercentage}%
+                                </span>
+                            </div>
                         </div>
                         <input
                             type="range"
@@ -356,8 +436,8 @@ export default function SimpleROICalculator(props: Props) {
                             }
                             style={{
                                 width: "100%",
-                                height: "8px",
-                                borderRadius: "4px",
+                                height: "6px",
+                                borderRadius: "3px",
                                 background:
                                     "linear-gradient(90deg, #8b5cf6, #a855f7)",
                                 outline: "none",
@@ -368,13 +448,15 @@ export default function SimpleROICalculator(props: Props) {
                             style={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                fontSize: "12px",
-                                color: "rgba(255, 255, 255, 0.5)",
-                                marginTop: "0.5rem",
+                                fontSize: "11px",
+                                color: "rgba(255, 255, 255, 0.4)",
+                                marginTop: "8px",
+                                fontWeight: 500,
                             }}
                         >
-                            <span>10% ({t.basicFlows})</span>
-                            <span>20% ({t.completeSystem})</span>
+                            <span>10%</span>
+                            <span>15%</span>
+                            <span>20%</span>
                         </div>
                     </div>
                 </div>
@@ -382,23 +464,43 @@ export default function SimpleROICalculator(props: Props) {
                 {/* Results Section */}
                 <div
                     style={{
-                        background: "rgba(30, 30, 40, 0.6)",
-                        backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(139, 92, 246, 0.2)",
-                        borderRadius: "24px",
+                        background: "linear-gradient(135deg, rgba(20, 20, 30, 0.9), rgba(30, 30, 40, 0.8))",
+                        backdropFilter: "blur(24px)",
+                        border: "1px solid rgba(139, 92, 246, 0.3)",
+                        borderRadius: "20px",
                         padding: "2rem",
+                        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
                     }}
                 >
-                    <h3
+                    <div
                         style={{
-                            fontSize: "20px",
-                            fontWeight: 700,
-                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
                             marginBottom: "2rem",
+                            paddingBottom: "1rem",
+                            borderBottom: "1px solid rgba(139, 92, 246, 0.2)",
                         }}
                     >
-                        {t.roiResults}
-                    </h3>
+                        <div
+                            style={{
+                                width: "8px",
+                                height: "32px",
+                                background: "linear-gradient(180deg, #8b5cf6, #a855f7)",
+                                borderRadius: "4px",
+                            }}
+                        />
+                        <h3
+                            style={{
+                                fontSize: "18px",
+                                fontWeight: 700,
+                                color: "#fff",
+                                margin: 0,
+                            }}
+                        >
+                            {t.roiResults}
+                        </h3>
+                    </div>
 
                     {!roiData ? (
                         <div
