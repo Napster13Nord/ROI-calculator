@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThriveFlows ROI Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #dbeafe 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .background-blobs {
+            position: absolute;
+            inset: 0;
+            opacity: 0.1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            top: 10%;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            background: #3b82f6;
+        }
+
+        .blob-2 {
+            bottom: 10%;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: #a855f7;
+            animation-delay: 2s;
+        }
+
+        .blob-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 350px;
+            background: #6366f1;
+            animation-delay: 4s;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .language-switch {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            border-radius: 12px;
+            padding: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 4px;
+        }
+
+        .language-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: #64748b;
+        }
+
+        .language-btn.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            margin-bottom: 3rem;
+        }
+
+        .logo img {
+            height: 48px;
+            width: auto;
+        }
+
+        .calculator-icon {
+            display: inline-flex;
+            padding: 16px;
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+        }
+
+        h1 {
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            padding: 0 0.5rem;
+        }
+
+        .subtitle {
+            font-size: clamp(16px, 3vw, 20px);
+            color: #475569;
+            max-width: 768px;
+            margin: 0 auto;
+            line-height: 1.6;
+            padding: 0 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            border-radius: 16px;
+            padding: clamp(16px, 4vw, 32px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: clamp(18px, 3vw, 24px);
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: clamp(14px, 2vw, 16px);
+            font-weight: 500;
+            color: #334155;
+            margin-bottom: 12px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .packages {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(8px, 2vw, 16px);
+        }
+
+        .package-btn {
+            position: relative;
+            padding: clamp(12px, 3vw, 24px);
+            border: 2px solid #cbd5e1;
+            border-radius: clamp(8px, 2vw, 12px);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .package-btn:hover {
+            border-color: #93c5fd;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+
+        .package-btn.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+            transform: scale(1.05);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+            color: white;
+            font-size: clamp(10px, 1.5vw, 12px);
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        .package-price {
+            font-size: clamp(18px, 4vw, 28px);
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .package-name {
+            font-size: clamp(12px, 2vw, 14px);
+            color: #64748b;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .slider-container {
+            margin-top: 12px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #86efac 0%, #22c55e 100%);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            border: none;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .quick-stats {
+            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .quick-stats-label {
+            font-size: 14px;
+            color: #1e40af;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .quick-stats-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .roi-results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .roi-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .roi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .roi-period {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .roi-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .roi-profit {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            border: 2px solid;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .summary-card.investment {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: #bbf7d0;
+        }
+
+        .summary-card.return {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-color: #bfdbfe;
+        }
+
+        .summary-card.payback {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border-color: #f0abfc;
+        }
+
+        .calendar-section {
+            margin-top: 3rem;
+        }
+
+        .calendar-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            border-radius: 16px;
+            padding: clamp(16px, 4vw, 32px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-title {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 700;
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 24px;
+        }
+
+        .calendar-embed {
+            width: 100%;
+            height: 500px;
+            overflow: auto;
+            border-radius: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .calendar-embed {
+                height: 600px;
+            }
+        }
+
+        .whatsapp-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .whatsapp-text {
+            color: #64748b;
+            font-size: clamp(14px, 2vw, 16px);
+            margin-bottom: 16px;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            font-weight: 700;
+            padding: clamp(12px, 3vw, 16px) clamp(24px, 5vw, 32px);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            font-size: clamp(14px, 2vw, 16px);
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: #64748b;
+            font-size: clamp(14px, 2vw, 18px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .language-switch {
+                top: 12px;
+                right: 12px;
+            }
+
+            .language-btn {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="language-switch">
+        <button class="language-btn" onclick="switchLanguage('pt')" id="lang-pt">🇵🇹 PT</button>
+        <button class="language-btn active" onclick="switchLanguage('en')" id="lang-en">🇺🇸 EN</button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="/ThriveFlows-Logo.png" alt="ThriveFlows">
+            </div>
+            <div class="calculator-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                    <line x1="8" y1="6" x2="16" y2="6"></line>
+                    <line x1="8" y1="10" x2="16" y2="10"></line>
+                    <line x1="8" y1="14" x2="16" y2="14"></line>
+                    <line x1="8" y1="18" x2="10" y2="18"></line>
+                    <line x1="14" y1="18" x2="16" y2="18"></line>
+                </svg>
+            </div>
+            <h1 id="main-title">ThriveFlows System ROI Calculator</h1>
+            <p class="subtitle">
+                <span id="subtitle-1">Discover how much monthly revenue our email automations can generate for your online store.</span>
+                <br>
+                <span id="subtitle-2">No paid ads. Just an intelligent email automation system.</span>
+            </p>
+        </div>
+
+        <div class="grid">
+            <!-- Input Section -->
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                        <span id="store-data-title">Your Online Store Data</span>
+                    </h2>
+
+                    <div class="form-group">
+                        <label class="form-label" id="revenue-label">💰 What is your online store's monthly revenue?</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">€</span>
+                            <input type="text" id="monthlyRevenue" placeholder="Ex: €50,000" oninput="calculateROI()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" id="package-label">📧 Email Automation Package</label>
+                        <div class="packages">
+                            <button class="package-btn" onclick="selectPackage(300)">
+                                <div class="package-price">€300</div>
+                                <div class="package-name" id="essential">Essential</div>
+                            </button>
+                            <button class="package-btn active" onclick="selectPackage(500)">
+                                <span class="popular-badge" id="popular">POPULAR</span>
+                                <div class="package-price">€500</div>
+                                <div class="package-name" id="professional">Professional</div>
+                            </button>
+                            <button class="package-btn" onclick="selectPackage(700)">
+                                <div class="package-price">€700</div>
+                                <div class="package-name" id="complete">Complete</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span id="sales-increase-label">📈 Sales Increase via Email Automations:</span>
+                            <span style="font-size: 28px; font-weight: 700; color: #2563eb; margin-left: 8px;" id="percentage-display">15%</span>
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" min="10" max="20" value="15" class="slider" id="growthSlider" oninput="updateSlider()">
+                            <div class="slider-labels">
+                                <span id="basic-flows">10% (Basic Flows)</span>
+                                <span id="complete-system">20% (Complete System)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="quick-stats" class="quick-stats hidden">
+                        <div class="quick-stats-label" id="additional-revenue">📧 Additional Revenue on Autopilot</div>
+                        <div class="quick-stats-value" id="additional-revenue-value">+€0 per month</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                        <span id="roi-results-title">ThriveFlows System ROI</span>
+                    </h2>
+
+                    <div id="results-placeholder" style="text-align: center; padding: 60px 20px;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="margin: 0 auto 16px;">
+                            <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                            <line x1="8" y1="6" x2="16" y2="6"></line>
+                            <line x1="8" y1="10" x2="16" y2="10"></line>
+                        </svg>
+                        <h3 style="font-size: 20px; font-weight: 600; color: #64748b; margin-bottom: 8px;" id="enter-revenue">👆 Enter your store's revenue</h3>
+                        <p style="color: #94a3b8;" id="discover-extra">And discover how much extra money the system can generate on autopilot!</p>
+                    </div>
+
+                    <div id="results-content" class="hidden">
+                        <div class="roi-results" id="roi-results"></div>
+                        <div class="summary-cards">
+                            <div class="summary-card investment">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="margin: 0 auto 12px;">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                    <polyline points="2 17 12 22 22 17"></polyline>
+                                    <polyline points="2 12 12 17 22 12"></polyline>
+                                </svg>
+                                <h3 style="font-size: 20px; font-weight: 700; color: #15803d; margin-bottom: 8px;" id="investment">Investment</h3>
+                                <div style="font-size: 32px; font-weight: 700; color: #16a34a; margin-bottom: 8px;" id="investment-value">€500</div>
+                                <p style="font-size: 14px; color: #22c55e;" id="setup-only">One-time system setup</p>
+                            </div>
+                            <div class="summary-card return">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" style="margin: 0 auto 12px;">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                                <h3 style="font-size: 20px; font-weight: 700; color: #1e40af; margin-bottom: 8px;" id="return-one-year">Return in 1 Year</h3>
+                                <div style="font-size: 32px; font-weight: 700; color: #2563eb; margin-bottom: 8px;" id="return-value">€0</div>
+                                <p style="font-size: 14px; color: #3b82f6;" id="roi-of">ROI of <span id="roi-percentage">0%</span></p>
+                            </div>
+                            <div class="summary-card payback">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9333ea" stroke-width="2" style="margin: 0 auto 12px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <h3 style="font-size: 20px; font-weight: 700; color: #7e22ce; margin-bottom: 8px;" id="payback">Payback</h3>
+                                <div style="font-size: 32px; font-weight: 700; color: #9333ea; margin-bottom: 8px;" id="payback-value">0 months</div>
+                                <p style="font-size: 14px; color: #a855f7;" id="total-return">Total return on investment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="calendar-section">
+            <div class="calendar-card">
+                <h3 class="calendar-title" id="calendar-title">📅 Schedule a Free Consultation</h3>
+                <div class="calendar-embed" id="my-cal-inline-revenue-recovery-potential"></div>
+
+                <div class="whatsapp-section">
+                    <p class="whatsapp-text" id="whatsapp-text">Prefer to chat on WhatsApp?</p>
+                    <a href="https://wa.me/3584578337530" target="_blank" rel="noopener noreferrer" class="whatsapp-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span id="whatsapp-btn-text">Contact on WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>✨ <strong id="footer-text">Over 100+ online stores have already increased their sales with our email flows</strong> ✨</p>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+        let systemPrice = 500;
+        let growthPercentage = 15;
+
+        const translations = {
+            pt: {
+                title: 'Calculadora de ROI do Sistema ThriveFlows',
+                subtitle1: 'Descubra quanta receita mensal nossas automações de email podem gerar para sua loja online.',
+                subtitle2: 'Sem anúncios pagos. Apenas um sistema de automação de email inteligente.',
+                storeDataTitle: 'Dados da Sua Loja Online',
+                monthlyRevenueLabel: 'Qual o faturamento mensal da sua loja online?',
+                emailPackageLabel: 'Pacote de Automações de Email',
+                salesIncreaseLabel: 'Aumento de Vendas via Automações de Email:',
+                essential: 'Essencial',
+                professional: 'Profissional',
+                complete: 'Completo',
+                popular: 'POPULAR',
+                basicFlows: '10% (Flows Básicos)',
+                completeSystem: '20% (Sistema Completo)',
+                additionalRevenue: 'Receita Adicional no Piloto Automático',
+                perMonth: 'por mês',
+                roiResultsTitle: 'ROI do Sistema ThriveFlows',
+                enterRevenue: 'Insira o faturamento da sua loja',
+                discoverExtra: 'E descubra quanto dinheiro extra o sistema pode gerar em piloto automático!',
+                oneMonth: '1 mês',
+                sixMonths: '6 meses',
+                oneYear: '1 ano',
+                twoYears: '2 anos',
+                profit: 'Lucro',
+                investment: 'Investimento',
+                setupOnly: 'Setup único do sistema',
+                returnOneYear: 'Retorno em 1 Ano',
+                roiOf: 'ROI de',
+                payback: 'Payback',
+                totalReturn: 'Retorno total do investimento',
+                months: 'meses',
+                month: 'mês',
+                scheduleConsultation: 'Agende uma Consulta Gratuita',
+                preferWhatsApp: 'Prefere conversar pelo WhatsApp?',
+                contactWhatsApp: 'Falar no WhatsApp',
+                footerText: 'Mais de 100+ lojas online já aumentaram suas vendas com nossos email flows'
+            },
+            en: {
+                title: 'ThriveFlows System ROI Calculator',
+                subtitle1: 'Discover how much monthly revenue our email automations can generate for your online store.',
+                subtitle2: 'No paid ads. Just an intelligent email automation system.',
+                storeDataTitle: 'Your Online Store Data',
+                monthlyRevenueLabel: "What is your online store's monthly revenue?",
+                emailPackageLabel: 'Email Automation Package',
+                salesIncreaseLabel: 'Sales Increase via Email Automations:',
+                essential: 'Essential',
+                professional: 'Professional',
+                complete: 'Complete',
+                popular: 'POPULAR',
+                basicFlows: '10% (Basic Flows)',
+                completeSystem: '20% (Complete System)',
+                additionalRevenue: 'Additional Revenue on Autopilot',
+                perMonth: 'per month',
+                roiResultsTitle: 'ThriveFlows System ROI',
+                enterRevenue: "Enter your store's revenue",
+                discoverExtra: 'And discover how much extra money the system can generate on autopilot!',
+                oneMonth: '1 month',
+                sixMonths: '6 months',
+                oneYear: '1 year',
+                twoYears: '2 years',
+                profit: 'Profit',
+                investment: 'Investment',
+                setupOnly: 'One-time system setup',
+                returnOneYear: 'Return in 1 Year',
+                roiOf: 'ROI of',
+                payback: 'Payback',
+                totalReturn: 'Total return on investment',
+                months: 'months',
+                month: 'month',
+                scheduleConsultation: 'Schedule a Free Consultation',
+                preferWhatsApp: 'Prefer to chat on WhatsApp?',
+                contactWhatsApp: 'Contact on WhatsApp',
+                footerText: 'Over 100+ online stores have already increased their sales with our email flows'
+            }
+        };
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('lang-pt').classList.toggle('active', lang === 'pt');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+
+            const t = translations[lang];
+            document.getElementById('main-title').textContent = t.title;
+            document.getElementById('subtitle-1').textContent = t.subtitle1;
+            document.getElementById('subtitle-2').textContent = t.subtitle2;
+            document.getElementById('store-data-title').textContent = t.storeDataTitle;
+            document.getElementById('revenue-label').textContent = '💰 ' + t.monthlyRevenueLabel;
+            document.getElementById('package-label').textContent = '📧 ' + t.emailPackageLabel;
+            document.getElementById('sales-increase-label').textContent = '📈 ' + t.salesIncreaseLabel;
+            document.getElementById('essential').textContent = t.essential;
+            document.getElementById('professional').textContent = t.professional;
+            document.getElementById('complete').textContent = t.complete;
+            document.getElementById('popular').textContent = t.popular;
+            document.getElementById('basic-flows').textContent = t.basicFlows;
+            document.getElementById('complete-system').textContent = t.completeSystem;
+            document.getElementById('additional-revenue').textContent = '📧 ' + t.additionalRevenue;
+            document.getElementById('roi-results-title').textContent = t.roiResultsTitle;
+            document.getElementById('enter-revenue').textContent = '👆 ' + t.enterRevenue;
+            document.getElementById('discover-extra').textContent = t.discoverExtra;
+            document.getElementById('investment').textContent = t.investment;
+            document.getElementById('setup-only').textContent = t.setupOnly;
+            document.getElementById('return-one-year').textContent = t.returnOneYear;
+            document.getElementById('roi-of').innerHTML = t.roiOf + ' <span id="roi-percentage"></span>';
+            document.getElementById('payback').textContent = t.payback;
+            document.getElementById('total-return').textContent = t.totalReturn;
+            document.getElementById('calendar-title').textContent = '📅 ' + t.scheduleConsultation;
+            document.getElementById('whatsapp-text').textContent = t.preferWhatsApp;
+            document.getElementById('whatsapp-btn-text').textContent = t.contactWhatsApp;
+            document.getElementById('footer-text').textContent = t.footerText;
+
+            calculateROI();
+        }
+
+        function selectPackage(price) {
+            systemPrice = price;
+            const buttons = document.querySelectorAll('.package-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.package-btn').classList.add('active');
+            document.getElementById('investment-value').textContent = '€' + price;
+            calculateROI();
+        }
+
+        function updateSlider() {
+            growthPercentage = parseInt(document.getElementById('growthSlider').value);
+            document.getElementById('percentage-display').textContent = growthPercentage + '%';
+            calculateROI();
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('pt-PT').replace(/\s/g, '');
+        }
+
+        function formatPercentage(value) {
+            return (value > 0 ? '+' : '') + value.toFixed(0) + '%';
+        }
+
+        function getROIColor(roi) {
+            if (roi >= 1000) return '#059669';
+            if (roi >= 500) return '#16a34a';
+            if (roi >= 200) return '#2563eb';
+            if (roi >= 0) return '#9333ea';
+            return '#dc2626';
+        }
+
+        function calculateROI() {
+            const revenueInput = document.getElementById('monthlyRevenue').value;
+            const revenue = parseFloat(revenueInput.replace(/[^\d.,]/g, '').replace(',', '.'));
+
+            if (!revenue || revenue <= 0) {
+                document.getElementById('quick-stats').classList.add('hidden');
+                document.getElementById('results-placeholder').style.display = 'block';
+                document.getElementById('results-content').classList.add('hidden');
+                return;
+            }
+
+            const monthlyIncrease = (revenue * growthPercentage) / 100;
+            const t = translations[currentLang];
+
+            // Quick stats
+            document.getElementById('quick-stats').classList.remove('hidden');
+            document.getElementById('additional-revenue-value').textContent =
+                '+€' + formatNumber(monthlyIncrease) + ' ' + t.perMonth;
+
+            // Show results
+            document.getElementById('results-placeholder').style.display = 'none';
+            document.getElementById('results-content').classList.remove('hidden');
+
+            // Calculate ROI for different periods
+            const periods = [
+                { name: t.oneMonth, months: 1 },
+                { name: t.sixMonths, months: 6 },
+                { name: t.oneYear, months: 12 },
+                { name: t.twoYears, months: 24 }
+            ];
+
+            const resultsHTML = periods.map(period => {
+                const totalGain = monthlyIncrease * period.months;
+                const profit = totalGain - systemPrice;
+                const roi = ((profit) / systemPrice) * 100;
+
+                return `
+                    <div class="roi-card">
+                        <div class="roi-period">${period.name}</div>
+                        <div class="roi-value" style="color: ${getROIColor(roi)}">${formatPercentage(roi)}</div>
+                        <div class="roi-profit"><strong>${t.profit}:</strong> €${formatNumber(profit)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('roi-results').innerHTML = resultsHTML;
+
+            // Update summary cards
+            const yearProfit = (monthlyIncrease * 12) - systemPrice;
+            const yearROI = ((yearProfit) / systemPrice) * 100;
+            const monthsToBreakEven = Math.ceil(systemPrice / monthlyIncrease);
+
+            document.getElementById('return-value').textContent = '€' + formatNumber(yearProfit);
+            document.getElementById('roi-percentage').textContent = formatPercentage(yearROI);
+            document.getElementById('payback-value').textContent = monthsToBreakEven + ' ' +
+                (monthsToBreakEven === 1 ? t.month : t.months);
+        }
+
+        // Load Cal.com script
+        (function (C, A, L) {
+            let p = function (a, ar) { a.q.push(ar); };
+            let d = C.document;
+            C.Cal = C.Cal || function () {
+                let cal = C.Cal;
+                let ar = arguments;
+                if (!cal.loaded) {
+                    cal.ns = {};
+                    cal.q = cal.q || [];
+                    d.head.appendChild(d.createElement("script")).src = A;
+                    cal.loaded = true;
+                }
+                if (ar[0] === L) {
+                    const api = function () { p(api, arguments); };
+                    const namespace = ar[1];
+                    api.q = api.q || [];
+                    if(typeof namespace === "string"){
+                        cal.ns[namespace] = cal.ns[namespace] || api;
+                        p(cal.ns[namespace], ar);
+                        p(cal, ["initNamespace", namespace]);
+                    } else p(cal, ar);
+                    return;
+                }
+                p(cal, ar);
+            };
+        })(window, "https://app.cal.com/embed/embed.js", "init");
+
+        Cal("init", "revenue-recovery-potential", {origin:"https://app.cal.com"});
+        Cal.ns["revenue-recovery-potential"]("inline", {
+            elementOrSelector:"#my-cal-inline-revenue-recovery-potential",
+            config: {"layout":"month_view","useSlotsViewOnSmallScreen":"true"},
+            calLink: "andre-lopes/revenue-recovery-potential",
+        });
+        Cal.ns["revenue-recovery-potential"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+    </script>
+</body>
+</html>
