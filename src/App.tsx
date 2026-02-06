@@ -204,15 +204,15 @@ const App = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-8"
           >
-            <div className="premium-card p-8 rounded-2xl shadow-2xl">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center">
-                <Target className="mr-3 h-6 w-6 text-blue-600" />
+            <div className="premium-card p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 flex items-center">
+                <Target className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                 {t('storeDataTitle')}
               </h2>
 
               {/* Monthly Revenue Input */}
-              <div className="mb-8">
-                <label className="block text-base font-medium text-slate-700 dark:text-slate-300 mb-3">
+              <div className="mb-6 sm:mb-8">
+                <label className="block text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300 mb-3">
                   💰 {t('monthlyRevenueLabel')}
                 </label>
                 <div className="relative">
@@ -237,11 +237,11 @@ const App = () => {
               </div>
 
               {/* System Price Selection */}
-              <div className="mb-8">
-                <label className="block text-base font-medium text-slate-700 dark:text-slate-300 mb-4">
+              <div className="mb-6 sm:mb-8">
+                <label className="block text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300 mb-3 sm:mb-4">
                   📧 {t('emailPackageLabel')}
                 </label>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                   {[
                     { price: 300, name: t('essential'), popular: false },
                     { price: 500, name: t('professional'), popular: true },
@@ -252,32 +252,32 @@ const App = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setSystemPrice(price)}
-                      className={`relative p-6 rounded-xl border-2 transition-all duration-300 ${
+                      className={`relative p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ${
                         systemPrice === price
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-xl transform scale-105'
                           : 'border-slate-300 dark:border-slate-600 hover:border-blue-300 hover:shadow-lg'
                       }`}
                     >
                       {popular && (
-                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                          <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                          <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
                             {t('popular')}
                           </span>
                         </div>
                       )}
-                      <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+                      <div className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-0.5 sm:mb-1">
                         €{price}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+                      <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium truncate">
                         {name}
                       </div>
                       {systemPrice === price && (
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="absolute top-2 right-2"
+                          className="absolute top-1 right-1 sm:top-2 sm:right-2"
                         >
-                          <CheckCircle className="h-5 w-5 text-blue-500" />
+                          <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
                         </motion.div>
                       )}
                     </motion.button>
