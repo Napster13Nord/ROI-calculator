@@ -159,16 +159,16 @@ const App = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500 rounded-full blur-3xl floating" style={{animationDelay: '4s'}}></div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
           {/* Logo Section */}
-          <div className="flex items-center justify-center mb-16">
+          <div className="flex items-center justify-center mb-8 sm:mb-12 md:mb-16">
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="relative"
@@ -187,10 +187,10 @@ const App = () => {
             </div>
           </div>
           
-          <h1 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: '#0f172a' }}>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 px-2" style={{ color: '#0f172a' }}>
             {t('title')}
           </h1>
-          <p className="text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: '#475569' }}>
+          <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed px-2" style={{ color: '#475569' }}>
             {t('subtitle')} 
             <br />{t('subtitleSecond')}
           </p>
@@ -640,17 +640,17 @@ const App = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.1 }}
-          className="mt-12 max-w-7xl mx-auto"
+          className="mt-8 sm:mt-12 max-w-7xl mx-auto"
         >
-          <div className="premium-card p-8 rounded-2xl shadow-2xl">
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
+          <div className="premium-card p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 text-center">
               📅 {t('scheduleConsultation')}
             </h3>
-            <div style={{width:'100%', height:'600px', overflow:'auto'}} id="my-cal-inline-revenue-recovery-potential"></div>
+            <div style={{width:'100%', height:'500px', overflow:'auto'}} className="sm:h-[600px]" id="my-cal-inline-revenue-recovery-potential"></div>
 
             {/* WhatsApp Alternative */}
-            <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-700">
-              <p className="text-center text-slate-600 dark:text-slate-400 mb-4">
+            <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-200 dark:border-slate-700">
+              <p className="text-center text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-4 px-2">
                 {t('preferWhatsApp')}
               </p>
               <motion.a
@@ -659,9 +659,9 @@ const App = () => {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center justify-center gap-3 mx-auto max-w-md bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="flex items-center justify-center gap-2 sm:gap-3 mx-auto max-w-md bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
               >
-                <MessageCircle className="h-6 w-6" />
+                <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span>{t('contactWhatsApp')}</span>
               </motion.a>
             </div>
@@ -673,9 +673,9 @@ const App = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.2 }}
-          className="text-center mt-16 text-slate-500 dark:text-slate-400"
+          className="text-center mt-12 sm:mt-16 text-slate-500 dark:text-slate-400 px-4"
         >
-          <p className="text-lg">
+          <p className="text-sm sm:text-base md:text-lg">
             ✨ <strong>{t('footerText')}</strong> ✨
           </p>
         </motion.div>
