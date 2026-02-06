@@ -223,7 +223,7 @@ export default function SimpleROICalculator(props: Props) {
                                 display: "block",
                                 fontSize: "13px",
                                 fontWeight: 600,
-                                color: "rgba(139, 92, 246, 0.9)",
+                                color: "#fff",
                                 marginBottom: "8px",
                                 textTransform: "uppercase",
                                 letterSpacing: "0.5px",
@@ -240,7 +240,7 @@ export default function SimpleROICalculator(props: Props) {
                                     transform: "translateY(-50%)",
                                     fontSize: "20px",
                                     fontWeight: 700,
-                                    color: "#8b5cf6",
+                                    color: "#fff",
                                 }}
                             >
                                 €
@@ -285,7 +285,7 @@ export default function SimpleROICalculator(props: Props) {
                                 display: "block",
                                 fontSize: "13px",
                                 fontWeight: 600,
-                                color: "rgba(139, 92, 246, 0.9)",
+                                color: "#fff",
                                 marginBottom: "8px",
                                 textTransform: "uppercase",
                                 letterSpacing: "0.5px",
@@ -349,10 +349,7 @@ export default function SimpleROICalculator(props: Props) {
                                         style={{
                                             fontSize: "11px",
                                             fontWeight: 600,
-                                            color:
-                                                systemPrice === price
-                                                    ? "rgba(255, 255, 255, 0.9)"
-                                                    : "rgba(139, 92, 246, 0.8)",
+                                            color: "#fff",
                                             marginBottom: "6px",
                                             textTransform: "uppercase",
                                             letterSpacing: "0.5px",
@@ -401,7 +398,7 @@ export default function SimpleROICalculator(props: Props) {
                                 style={{
                                     fontSize: "13px",
                                     fontWeight: 600,
-                                    color: "rgba(139, 92, 246, 0.9)",
+                                    color: "#fff",
                                     textTransform: "uppercase",
                                     letterSpacing: "0.5px",
                                 }}
@@ -615,7 +612,7 @@ export default function SimpleROICalculator(props: Props) {
                                 >
                                     <div
                                         style={{
-                                            fontSize: "14px",
+                                            fontSize: "12px",
                                             fontWeight: 600,
                                             color: "#10b981",
                                             marginBottom: "0.5rem",
@@ -625,7 +622,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "28px",
+                                            fontSize: "22px",
                                             fontWeight: 700,
                                             color: "#10b981",
                                             marginBottom: "0.25rem",
@@ -635,7 +632,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "12px",
+                                            fontSize: "10px",
                                             color: "rgba(16, 185, 129, 0.8)",
                                         }}
                                     >
@@ -656,7 +653,7 @@ export default function SimpleROICalculator(props: Props) {
                                 >
                                     <div
                                         style={{
-                                            fontSize: "14px",
+                                            fontSize: "12px",
                                             fontWeight: 600,
                                             color: "#8b5cf6",
                                             marginBottom: "0.5rem",
@@ -666,7 +663,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "28px",
+                                            fontSize: "22px",
                                             fontWeight: 700,
                                             color: "#8b5cf6",
                                             marginBottom: "0.25rem",
@@ -676,7 +673,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "12px",
+                                            fontSize: "10px",
                                             color: "rgba(139, 92, 246, 0.8)",
                                         }}
                                     >
@@ -697,7 +694,7 @@ export default function SimpleROICalculator(props: Props) {
                                 >
                                     <div
                                         style={{
-                                            fontSize: "14px",
+                                            fontSize: "12px",
                                             fontWeight: 600,
                                             color: "#a855f7",
                                             marginBottom: "0.5rem",
@@ -707,7 +704,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "28px",
+                                            fontSize: "22px",
                                             fontWeight: 700,
                                             color: "#a855f7",
                                             marginBottom: "0.25rem",
@@ -720,7 +717,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "12px",
+                                            fontSize: "10px",
                                             color: "rgba(168, 85, 247, 0.8)",
                                         }}
                                     >
