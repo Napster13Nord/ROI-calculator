@@ -259,6 +259,7 @@ export default function SimpleROICalculator(props: Props) {
                                 placeholder={t.placeholder}
                                 style={{
                                     width: "100%",
+                                    maxWidth: "100%",
                                     padding: "18px 18px 18px 50px",
                                     background: "rgba(0, 0, 0, 0.4)",
                                     border: "1px solid rgba(139, 92, 246, 0.4)",
@@ -268,6 +269,8 @@ export default function SimpleROICalculator(props: Props) {
                                     color: "#fff",
                                     outline: "none",
                                     transition: "all 0.3s",
+                                    boxSizing: "border-box",
+                                    minWidth: 0,
                                 }}
                                 onFocus={(e) => {
                                     e.target.style.border = "1px solid #8b5cf6"
