@@ -120,12 +120,26 @@ export default function SimpleROICalculator(props: Props) {
     }, [monthlyRevenue, systemPrice, growthPercentage])
 
     const formatNumber = (num: number) => {
+        const absNum = Math.abs(num)
+        if (absNum >= 1000000) {
+            return (num < 0 ? "-" : "") + (absNum / 1000000).toFixed(1) + "M"
+        }
+        if (absNum >= 1000) {
+            return (num < 0 ? "-" : "") + (absNum / 1000).toFixed(1) + "K"
+        }
         return Math.round(num)
             .toLocaleString("pt-PT")
             .replace(/\s/g, "")
     }
 
     const formatPercentage = (value: number) => {
+        const absValue = Math.abs(value)
+        if (absValue >= 1000000) {
+            return (value > 0 ? "+" : "") + (absValue / 1000000).toFixed(1) + "M%"
+        }
+        if (absValue >= 1000) {
+            return (value > 0 ? "+" : "") + (absValue / 1000).toFixed(1) + "K%"
+        }
         return (value > 0 ? "+" : "") + value.toFixed(0) + "%"
     }
 
@@ -253,9 +267,12 @@ export default function SimpleROICalculator(props: Props) {
                             <input
                                 type="text"
                                 value={monthlyRevenue}
-                                onChange={(e) =>
-                                    setMonthlyRevenue(e.target.value)
-                                }
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, "")
+                                    if (value.length <= 12) {
+                                        setMonthlyRevenue(value)
+                                    }
+                                }}
                                 placeholder={t.placeholder}
                                 style={{
                                     width: "100%",
@@ -583,6 +600,8 @@ export default function SimpleROICalculator(props: Props) {
                                                 fontWeight: 700,
                                                 color: getROIColor(data.roi),
                                                 marginBottom: "0.5rem",
+                                                wordBreak: "break-word",
+                                                overflowWrap: "break-word",
                                             }}
                                         >
                                             {formatPercentage(data.roi)}
@@ -591,6 +610,8 @@ export default function SimpleROICalculator(props: Props) {
                                             style={{
                                                 fontSize: "13px",
                                                 color: "rgba(255, 255, 255, 0.6)",
+                                                wordBreak: "break-word",
+                                                overflowWrap: "break-word",
                                             }}
                                         >
                                             {t.profit}: €{formatNumber(data.profit)}
@@ -635,6 +656,8 @@ export default function SimpleROICalculator(props: Props) {
                                             fontWeight: 700,
                                             color: "#10b981",
                                             marginBottom: "0.25rem",
+                                            wordBreak: "break-word",
+                                            overflowWrap: "break-word",
                                         }}
                                     >
                                         €{systemPrice}
@@ -676,6 +699,8 @@ export default function SimpleROICalculator(props: Props) {
                                             fontWeight: 700,
                                             color: "#8b5cf6",
                                             marginBottom: "0.25rem",
+                                            wordBreak: "break-word",
+                                            overflowWrap: "break-word",
                                         }}
                                     >
                                         €{formatNumber(roiData.oneYear.profit)}
@@ -684,6 +709,8 @@ export default function SimpleROICalculator(props: Props) {
                                         style={{
                                             fontSize: "12px",
                                             color: "rgba(139, 92, 246, 0.8)",
+                                            wordBreak: "break-word",
+                                            overflowWrap: "break-word",
                                         }}
                                     >
                                         {formatPercentage(roiData.oneYear.roi)}
@@ -717,6 +744,8 @@ export default function SimpleROICalculator(props: Props) {
                                             fontWeight: 700,
                                             color: "#a855f7",
                                             marginBottom: "0.25rem",
+                                            wordBreak: "break-word",
+                                            overflowWrap: "break-word",
                                         }}
                                     >
                                         {roiData.oneMonth.monthsToBreakEven}{" "}
