@@ -158,10 +158,15 @@ export default function SimpleROICalculator(props: Props) {
                     }
                     @media (max-width: 768px) {
                         .packages-grid {
-                            gap: 0.5rem !important;
+                            grid-template-columns: 1fr !important;
+                            gap: 0.75rem !important;
+                        }
+                        .summary-cards-grid {
+                            grid-template-columns: 1fr !important;
+                            gap: 1rem !important;
                         }
                         .package-btn {
-                            padding: 1rem !important;
+                            padding: 1.25rem !important;
                         }
                     }
                 `}
@@ -593,6 +598,7 @@ export default function SimpleROICalculator(props: Props) {
 
                             {/* Summary Cards */}
                             <div
+                                className="summary-cards-grid"
                                 style={{
                                     display: "grid",
                                     gridTemplateColumns: "repeat(3, 1fr)",
@@ -632,7 +638,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "10px",
+                                            fontSize: "12px",
                                             color: "rgba(16, 185, 129, 0.8)",
                                         }}
                                     >
@@ -673,7 +679,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "10px",
+                                            fontSize: "12px",
                                             color: "rgba(139, 92, 246, 0.8)",
                                         }}
                                     >
@@ -717,7 +723,7 @@ export default function SimpleROICalculator(props: Props) {
                                     </div>
                                     <div
                                         style={{
-                                            fontSize: "10px",
+                                            fontSize: "12px",
                                             color: "rgba(168, 85, 247, 0.8)",
                                         }}
                                     >
