@@ -86,11 +86,12 @@ export default function SimpleROICalculator(props: Props) {
                 width: "100%",
                 maxWidth: "1100px",
                 margin: "0 auto",
-                fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                fontFamily: "'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                 color: "#fff",
             }}
         >
             <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap');
                 .roi-slider {
                     -webkit-appearance: none;
                     appearance: none;
