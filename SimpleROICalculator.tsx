@@ -98,7 +98,7 @@ export default function SimpleROICalculator(props: Props) {
                     width: 100%;
                     height: 4px;
                     border-radius: 2px;
-                    background: linear-gradient(90deg, #a855f7, #8b5cf6);
+                    background: linear-gradient(90deg, #814ac8, #814ac8);
                     outline: none;
                     cursor: pointer;
                 }
@@ -108,7 +108,7 @@ export default function SimpleROICalculator(props: Props) {
                     width: 20px;
                     height: 20px;
                     border-radius: 50%;
-                    background: #a855f7;
+                    background: #814ac8;
                     cursor: pointer;
                     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
                 }
@@ -116,7 +116,7 @@ export default function SimpleROICalculator(props: Props) {
                     width: 20px;
                     height: 20px;
                     border-radius: 50%;
-                    background: #a855f7;
+                    background: #814ac8;
                     cursor: pointer;
                     border: none;
                     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
@@ -159,7 +159,7 @@ export default function SimpleROICalculator(props: Props) {
                         className="roi-title"
                         style={{
                             fontSize: "28px",
-                            fontWeight: 700,
+                            fontWeight: 500,
                             color: "#fff",
                             margin: "0 0 2rem 0",
                         }}
@@ -220,7 +220,7 @@ export default function SimpleROICalculator(props: Props) {
                             <span style={{ fontSize: "16px", fontWeight: 600, color: "#fff" }}>
                                 {t.emailPackage}:
                             </span>
-                            <span style={{ fontSize: "16px", fontWeight: 600, color: "#a855f7" }}>
+                            <span style={{ fontSize: "16px", fontWeight: 600, color: "#814ac8" }}>
                                 {selectedPackage.automations} {t.automations} · ${selectedPackage.price}
                             </span>
                         </div>
@@ -305,14 +305,14 @@ export default function SimpleROICalculator(props: Props) {
                         className="roi-results-title"
                         style={{
                             fontSize: "26px",
-                            fontWeight: 700,
+                            fontWeight: 500,
                             color: "#fff",
                             margin: "0 0 1.5rem 0",
                             lineHeight: 1.3,
                         }}
                     >
                         {t.resultsTitle}{" "}
-                        <span style={{ color: "#a855f7" }}>{t.resultsHighlight}</span>
+                        <span style={{ color: "#814ac8" }}>{t.resultsHighlight}</span>
                     </h2>
 
                     <div className="roi-result-row">
@@ -394,7 +394,7 @@ export default function SimpleROICalculator(props: Props) {
                             style={{
                                 fontSize: "32px",
                                 fontWeight: 800,
-                                color: "#a855f7",
+                                color: "#814ac8",
                             }}
                         >
                             {formatROI(results.roi)}
