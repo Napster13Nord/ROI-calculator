@@ -13,17 +13,16 @@ const translations = {
         monthlyRevenue: "Faturamento Mensal",
         emailPackage: "Pacote de Automações",
         salesIncrease: "Aumento de Vendas",
-        essential: "Essencial",
-        professional: "Profissional",
-        complete: "Completo",
-        packageLabel: "Pacote",
-        increase: "Aumento",
+        increase: "Aumento Estimado",
         monthlyGain: "Ganho Mensal",
-        monthlyInvestment: "Mensalidade do Sistema",
-        yearlyProjection: "Projeção Anual",
-        roi: "ROI Projetado",
+        monthlyInvestment: "Investimento",
+        returnYear: "Retorno em 1 Ano",
+        payback: "Payback",
+        paybackSub: "Retorno total sobre investimento",
+        roiYear: "ROI em 1 Ano",
         automations: "Automações",
-        placeholder: "50000",
+        months: "meses",
+        month: "mês",
     },
     en: {
         title: "Revenue Calculator",
@@ -32,17 +31,16 @@ const translations = {
         monthlyRevenue: "Monthly Revenue",
         emailPackage: "Automation Package",
         salesIncrease: "Sales Increase",
-        essential: "Essential",
-        professional: "Professional",
-        complete: "Complete",
-        packageLabel: "Package",
-        increase: "Increase",
+        increase: "Estimated Increase",
         monthlyGain: "Monthly Gain",
-        monthlyInvestment: "System Investment",
-        yearlyProjection: "Annual Projection",
-        roi: "Projected ROI",
+        monthlyInvestment: "Investment",
+        returnYear: "Return in 1 Year",
+        payback: "Payback",
+        paybackSub: "Total return on investment",
+        roiYear: "ROI in 1 Year",
         automations: "Automations",
-        placeholder: "50000",
+        months: "months",
+        month: "month",
     },
 }
 
@@ -56,7 +54,7 @@ export default function SimpleROICalculator(props: Props) {
     const { language = "en" } = props
     const t = translations[language]
 
-    const [monthlyRevenue, setMonthlyRevenue] = useState(50000)
+    const [monthlyRevenue, setMonthlyRevenue] = useState(10000)
     const [systemPrice, setSystemPrice] = useState(500)
     const [growthPercentage, setGrowthPercentage] = useState(15)
 
@@ -64,20 +62,22 @@ export default function SimpleROICalculator(props: Props) {
 
     const results = useMemo(() => {
         const monthlyIncrease = (monthlyRevenue * growthPercentage) / 100
-        const yearlyIncrease = monthlyIncrease * 12
-        const roi = ((yearlyIncrease - systemPrice) / systemPrice) * 100
-        return { monthlyIncrease, yearlyIncrease, roi }
+        const yearlyReturn = monthlyIncrease * 12
+        const roi = ((yearlyReturn - systemPrice) / systemPrice) * 100
+        const paybackMonths = monthlyIncrease > 0 ? Math.ceil(systemPrice / monthlyIncrease) : 0
+        return { monthlyIncrease, yearlyReturn, roi, paybackMonths }
     }, [monthlyRevenue, systemPrice, growthPercentage])
 
     const formatCurrency = (num: number) => {
-        return Math.round(num).toLocaleString("pt-PT").replace(/\s/g, "\u00a0") + " €"
+        return "$" + Math.round(num).toLocaleString("en-US")
     }
 
     const formatROI = (value: number) => {
         const absValue = Math.abs(value)
-        if (absValue >= 1000000) return (value > 0 ? "+" : "") + (absValue / 1000000).toFixed(1) + "M%"
-        if (absValue >= 1000) return Math.round(value).toLocaleString("pt-PT").replace(/\s/g, "") + "%"
-        return Math.round(value) + "%"
+        const sign = value > 0 ? "+" : ""
+        if (absValue >= 1000000) return sign + (absValue / 1000000).toFixed(1) + "M%"
+        if (absValue >= 1000) return sign + Math.round(value).toLocaleString("en-US") + "%"
+        return sign + Math.round(value) + "%"
     }
 
     return (
@@ -124,7 +124,7 @@ export default function SimpleROICalculator(props: Props) {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 14px 0;
+                    padding: 12px 0;
                     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 }
                 .roi-result-row:last-child {
@@ -134,8 +134,11 @@ export default function SimpleROICalculator(props: Props) {
                     .roi-layout {
                         grid-template-columns: 1fr !important;
                     }
-                    .roi-packages {
-                        grid-template-columns: 1fr 1fr 1fr !important;
+                    .roi-title {
+                        text-align: center !important;
+                    }
+                    .roi-results-title {
+                        text-align: center !important;
                     }
                 }
             `}</style>
@@ -152,11 +155,11 @@ export default function SimpleROICalculator(props: Props) {
                 {/* Left: Inputs */}
                 <div style={{ padding: "0.5rem 0" }}>
                     <h2
+                        className="roi-title"
                         style={{
                             fontSize: "28px",
                             fontWeight: 700,
                             color: "#fff",
-                            marginBottom: "2rem",
                             margin: "0 0 2rem 0",
                         }}
                     >
@@ -184,7 +187,7 @@ export default function SimpleROICalculator(props: Props) {
                             className="roi-slider"
                             type="range"
                             min="1000"
-                            max="500000"
+                            max="100000"
                             step="1000"
                             value={monthlyRevenue}
                             onChange={(e) => setMonthlyRevenue(parseInt(e.target.value))}
@@ -198,8 +201,8 @@ export default function SimpleROICalculator(props: Props) {
                                 marginTop: "4px",
                             }}
                         >
-                            <span>€1.000</span>
-                            <span>€500.000</span>
+                            <span>$1,000</span>
+                            <span>$100,000</span>
                         </div>
                     </div>
 
@@ -217,7 +220,7 @@ export default function SimpleROICalculator(props: Props) {
                                 {t.emailPackage}:
                             </span>
                             <span style={{ fontSize: "16px", fontWeight: 600, color: "#a855f7" }}>
-                                {selectedPackage.automations} {t.automations} · €{selectedPackage.price}
+                                {selectedPackage.automations} {t.automations} · ${selectedPackage.price}
                             </span>
                         </div>
                         <input
@@ -298,6 +301,7 @@ export default function SimpleROICalculator(props: Props) {
                     }}
                 >
                     <h2
+                        className="roi-results-title"
                         style={{
                             fontSize: "26px",
                             fontWeight: 700,
@@ -314,7 +318,7 @@ export default function SimpleROICalculator(props: Props) {
                         <span style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
                             {t.emailPackage}:
                         </span>
-                        <span style={{ fontSize: "15px", fontWeight: 700, color: "#10b981" }}>
+                        <span style={{ fontSize: "15px", fontWeight: 700, color: "#fff" }}>
                             {selectedPackage.automations} {t.automations}
                         </span>
                     </div>
@@ -324,7 +328,7 @@ export default function SimpleROICalculator(props: Props) {
                             {t.monthlyInvestment}:
                         </span>
                         <span style={{ fontSize: "15px", fontWeight: 700, color: "#f59e0b" }}>
-                            {selectedPackage.price} €
+                            ${selectedPackage.price}
                         </span>
                     </div>
 
@@ -346,22 +350,48 @@ export default function SimpleROICalculator(props: Props) {
                         </span>
                     </div>
 
+                    {/* Return in 1 Year — highlighted */}
                     <div className="roi-result-row">
-                        <span style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
-                            {t.yearlyProjection}:
-                        </span>
-                        <span style={{ fontSize: "16px", fontWeight: 700, color: "#10b981" }}>
-                            {formatCurrency(results.yearlyIncrease)}
+                        <div>
+                            <div style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
+                                {t.returnYear}
+                            </div>
+                        </div>
+                        <span style={{ fontSize: "22px", fontWeight: 800, color: "#10b981" }}>
+                            {formatCurrency(results.yearlyReturn)}
                         </span>
                     </div>
 
+                    {/* Payback */}
                     <div className="roi-result-row">
+                        <div>
+                            <div style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
+                                {t.payback}
+                            </div>
+                            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", marginTop: "2px" }}>
+                                {t.paybackSub}
+                            </div>
+                        </div>
+                        <span style={{ fontSize: "18px", fontWeight: 700, color: "#f59e0b" }}>
+                            {results.paybackMonths} {results.paybackMonths === 1 ? t.month : t.months}
+                        </span>
+                    </div>
+
+                    {/* ROI in 1 Year — most prominent */}
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "16px 0 4px",
+                        }}
+                    >
                         <span style={{ fontSize: "18px", fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
-                            {t.roi}:
+                            {t.roiYear}:
                         </span>
                         <span
                             style={{
-                                fontSize: "28px",
+                                fontSize: "32px",
                                 fontWeight: 800,
                                 color: "#a855f7",
                             }}
