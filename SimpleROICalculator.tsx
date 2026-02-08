@@ -1,5 +1,5 @@
 import { addPropertyControls, ControlType } from "framer"
-import { useState, useEffect } from "react"
+import { useState, useMemo } from "react"
 
 interface Props {
     language?: "en" | "pt"
@@ -7,473 +7,278 @@ interface Props {
 
 const translations = {
     pt: {
-        storeData: "Dados da Sua Loja Online",
+        title: "Calculadora de Receita",
+        resultsTitle: "O Seu Potencial de",
+        resultsHighlight: "Crescimento",
         monthlyRevenue: "Faturamento Mensal",
-        placeholder: "€50,000",
         emailPackage: "Pacote de Automações",
+        salesIncrease: "Aumento de Vendas",
         essential: "Essencial",
         professional: "Profissional",
         complete: "Completo",
-        salesIncrease: "Aumento de Vendas",
-        basicFlows: "Flows Básicos",
-        completeSystem: "Sistema Completo",
-        roiResults: "ROI do Sistema ThriveFlows",
-        oneMonth: "1 mês",
-        sixMonths: "6 meses",
-        oneYear: "1 ano",
-        twoYears: "2 anos",
-        profit: "Lucro",
-        investment: "Investimento",
-        setupOnly: "Setup único",
-        returnYear: "Retorno 1 Ano",
-        payback: "Payback",
-        months: "meses",
-        month: "mês",
-        enterRevenue: "Insira o faturamento da sua loja",
-        discover: "Descubra quanto você pode ganhar!",
+        packageLabel: "Pacote",
+        increase: "Aumento",
+        monthlyGain: "Ganho Mensal",
+        monthlyInvestment: "Mensalidade do Sistema",
+        yearlyProjection: "Projeção Anual",
+        roi: "ROI Projetado",
+        automations: "Automações",
+        placeholder: "50000",
     },
     en: {
-        storeData: "Your Online Store Data",
+        title: "Revenue Calculator",
+        resultsTitle: "Your Growth",
+        resultsHighlight: "Potential",
         monthlyRevenue: "Monthly Revenue",
-        placeholder: "€50,000",
-        emailPackage: "Email Package",
+        emailPackage: "Automation Package",
+        salesIncrease: "Sales Increase",
         essential: "Essential",
         professional: "Professional",
         complete: "Complete",
-        salesIncrease: "Sales Increase",
-        basicFlows: "Basic Flows",
-        completeSystem: "Complete System",
-        roiResults: "ThriveFlows System ROI",
-        oneMonth: "1 month",
-        sixMonths: "6 months",
-        oneYear: "1 year",
-        twoYears: "2 years",
-        profit: "Profit",
-        investment: "Investment",
-        setupOnly: "One-time setup",
-        returnYear: "Return 1 Year",
-        payback: "Payback",
-        months: "months",
-        month: "month",
-        enterRevenue: "Enter your store's revenue",
-        discover: "Discover how much you could earn!",
+        packageLabel: "Package",
+        increase: "Increase",
+        monthlyGain: "Monthly Gain",
+        monthlyInvestment: "System Investment",
+        yearlyProjection: "Annual Projection",
+        roi: "Projected ROI",
+        automations: "Automations",
+        placeholder: "50000",
     },
 }
+
+const PACKAGES = [
+    { price: 300, automations: 3, key: "essential" },
+    { price: 500, automations: 5, key: "professional" },
+    { price: 700, automations: 8, key: "complete" },
+]
 
 export default function SimpleROICalculator(props: Props) {
     const { language = "en" } = props
     const t = translations[language]
 
-    const [monthlyRevenue, setMonthlyRevenue] = useState("")
+    const [monthlyRevenue, setMonthlyRevenue] = useState(50000)
     const [systemPrice, setSystemPrice] = useState(500)
     const [growthPercentage, setGrowthPercentage] = useState(15)
-    const [roiData, setRoiData] = useState<any>(null)
 
-    useEffect(() => {
-        if (monthlyRevenue) {
-            const revenue = parseFloat(
-                monthlyRevenue.replace(/[^\d.,]/g, "").replace(",", ".")
-            )
-            if (revenue && revenue > 0) {
-                const monthlyIncrease = (revenue * growthPercentage) / 100
+    const selectedPackage = PACKAGES.find((p) => p.price === systemPrice) || PACKAGES[1]
 
-                const results = {
-                    oneMonth: {
-                        totalGain: monthlyIncrease,
-                        roi:
-                            ((monthlyIncrease - systemPrice) / systemPrice) *
-                            100,
-                        profit: monthlyIncrease - systemPrice,
-                        monthsToBreakEven: Math.ceil(
-                            systemPrice / monthlyIncrease
-                        ),
-                    },
-                    sixMonths: {
-                        totalGain: monthlyIncrease * 6,
-                        roi:
-                            ((monthlyIncrease * 6 - systemPrice) /
-                                systemPrice) *
-                            100,
-                        profit: monthlyIncrease * 6 - systemPrice,
-                    },
-                    oneYear: {
-                        totalGain: monthlyIncrease * 12,
-                        roi:
-                            ((monthlyIncrease * 12 - systemPrice) /
-                                systemPrice) *
-                            100,
-                        profit: monthlyIncrease * 12 - systemPrice,
-                    },
-                    twoYears: {
-                        totalGain: monthlyIncrease * 24,
-                        roi:
-                            ((monthlyIncrease * 24 - systemPrice) /
-                                systemPrice) *
-                            100,
-                        profit: monthlyIncrease * 24 - systemPrice,
-                    },
-                }
-
-                setRoiData(results)
-            }
-        }
+    const results = useMemo(() => {
+        const monthlyIncrease = (monthlyRevenue * growthPercentage) / 100
+        const yearlyIncrease = monthlyIncrease * 12
+        const roi = ((yearlyIncrease - systemPrice) / systemPrice) * 100
+        return { monthlyIncrease, yearlyIncrease, roi }
     }, [monthlyRevenue, systemPrice, growthPercentage])
 
-    const formatNumber = (num: number) => {
-        const absNum = Math.abs(num)
-        if (absNum >= 1000000) {
-            return (num < 0 ? "-" : "") + (absNum / 1000000).toFixed(1) + "M"
-        }
-        if (absNum >= 1000) {
-            return (num < 0 ? "-" : "") + (absNum / 1000).toFixed(1) + "K"
-        }
-        return Math.round(num)
-            .toLocaleString("pt-PT")
-            .replace(/\s/g, "")
+    const formatCurrency = (num: number) => {
+        return Math.round(num).toLocaleString("pt-PT").replace(/\s/g, "\u00a0") + " €"
     }
 
-    const formatPercentage = (value: number) => {
+    const formatROI = (value: number) => {
         const absValue = Math.abs(value)
-        if (absValue >= 1000000) {
-            return (value > 0 ? "+" : "") + (absValue / 1000000).toFixed(1) + "M%"
-        }
-        if (absValue >= 1000) {
-            return (value > 0 ? "+" : "") + (absValue / 1000).toFixed(1) + "K%"
-        }
-        return (value > 0 ? "+" : "") + value.toFixed(0) + "%"
-    }
-
-    const getROIColor = (roi: number) => {
-        if (roi >= 1000) return "#10b981"
-        if (roi >= 500) return "#22c55e"
-        if (roi >= 200) return "#8b5cf6"
-        if (roi >= 0) return "#a855f7"
-        return "#ef4444"
+        if (absValue >= 1000000) return (value > 0 ? "+" : "") + (absValue / 1000000).toFixed(1) + "M%"
+        if (absValue >= 1000) return Math.round(value).toLocaleString("pt-PT").replace(/\s/g, "") + "%"
+        return Math.round(value) + "%"
     }
 
     return (
         <div
             style={{
                 width: "100%",
-                maxWidth: "1200px",
+                maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "0 1rem",
-                fontFamily:
-                    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                color: "#fff",
             }}
         >
-            <style>
-                {`
-                    @media (max-width: 1024px) {
-                        .calc-grid {
-                            grid-template-columns: 1fr !important;
-                            gap: 2rem !important;
-                        }
+            <style>{`
+                .roi-slider {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    width: 100%;
+                    height: 4px;
+                    border-radius: 2px;
+                    background: linear-gradient(90deg, #a855f7, #8b5cf6);
+                    outline: none;
+                    cursor: pointer;
+                }
+                .roi-slider::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: #a855f7;
+                    cursor: pointer;
+                    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
+                }
+                .roi-slider::-moz-range-thumb {
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: #a855f7;
+                    cursor: pointer;
+                    border: none;
+                    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
+                }
+                .roi-result-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 14px 0;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                }
+                .roi-result-row:last-child {
+                    border-bottom: none;
+                }
+                @media (max-width: 768px) {
+                    .roi-layout {
+                        grid-template-columns: 1fr !important;
                     }
-                    @media (max-width: 768px) {
-                        .packages-grid {
-                            grid-template-columns: 1fr !important;
-                            gap: 0.75rem !important;
-                        }
-                        .summary-cards-grid {
-                            grid-template-columns: 1fr !important;
-                            gap: 1rem !important;
-                        }
-                        .package-btn {
-                            padding: 1.25rem !important;
-                        }
+                    .roi-packages {
+                        grid-template-columns: 1fr 1fr 1fr !important;
                     }
-                `}
-            </style>
+                }
+            `}</style>
 
             <div
-                className="calc-grid"
+                className="roi-layout"
                 style={{
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr",
-                    gap: "3rem",
+                    gap: "2rem",
+                    alignItems: "stretch",
                 }}
             >
-                {/* Input Section */}
-                <div
-                    style={{
-                        background: "linear-gradient(135deg, rgba(20, 20, 30, 0.9), rgba(30, 30, 40, 0.8))",
-                        backdropFilter: "blur(24px)",
-                        border: "1px solid rgba(139, 92, 246, 0.3)",
-                        borderRadius: "20px",
-                        padding: "2rem",
-                        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-                    }}
-                >
-                    <div
+                {/* Left: Inputs */}
+                <div style={{ padding: "0.5rem 0" }}>
+                    <h2
                         style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
+                            fontSize: "28px",
+                            fontWeight: 700,
+                            color: "#fff",
                             marginBottom: "2rem",
-                            paddingBottom: "1rem",
-                            borderBottom: "1px solid rgba(139, 92, 246, 0.2)",
+                            margin: "0 0 2rem 0",
                         }}
                     >
+                        {t.title}
+                    </h2>
+
+                    {/* Monthly Revenue Slider */}
+                    <div style={{ marginBottom: "2rem" }}>
                         <div
                             style={{
-                                width: "8px",
-                                height: "32px",
-                                background: "linear-gradient(180deg, #8b5cf6, #a855f7)",
-                                borderRadius: "4px",
-                            }}
-                        />
-                        <h3
-                            style={{
-                                fontSize: "18px",
-                                fontWeight: 700,
-                                color: "#fff",
-                                margin: 0,
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "baseline",
+                                marginBottom: "4px",
                             }}
                         >
-                            {t.storeData}
-                        </h3>
-                    </div>
-
-                    {/* Revenue Input */}
-                    <div style={{ marginBottom: "1.75rem" }}>
-                        <label
-                            style={{
-                                display: "block",
-                                fontSize: "13px",
-                                fontWeight: 600,
-                                color: "#fff",
-                                marginBottom: "8px",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                            }}
-                        >
-                            {t.monthlyRevenue}
-                        </label>
-                        <div style={{ position: "relative" }}>
-                            <span
-                                style={{
-                                    position: "absolute",
-                                    left: "18px",
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    fontSize: "20px",
-                                    fontWeight: 700,
-                                    color: "#fff",
-                                }}
-                            >
-                                €
+                            <span style={{ fontSize: "16px", fontWeight: 600, color: "#fff" }}>
+                                {t.monthlyRevenue}:
                             </span>
-                            <input
-                                type="text"
-                                value={monthlyRevenue}
-                                onChange={(e) => {
-                                    const value = e.target.value.replace(/[^\d]/g, "")
-                                    if (value.length <= 12) {
-                                        setMonthlyRevenue(value)
-                                    }
-                                }}
-                                placeholder={t.placeholder}
-                                style={{
-                                    width: "100%",
-                                    maxWidth: "100%",
-                                    padding: "18px 18px 18px 50px",
-                                    background: "rgba(0, 0, 0, 0.4)",
-                                    border: "1px solid rgba(139, 92, 246, 0.4)",
-                                    borderRadius: "12px",
-                                    fontSize: "18px",
-                                    fontWeight: 600,
-                                    color: "#fff",
-                                    outline: "none",
-                                    transition: "all 0.3s",
-                                    boxSizing: "border-box",
-                                    minWidth: 0,
-                                }}
-                                onFocus={(e) => {
-                                    e.target.style.border = "1px solid #8b5cf6"
-                                    e.target.style.boxShadow =
-                                        "0 0 0 3px rgba(139, 92, 246, 0.1)"
-                                }}
-                                onBlur={(e) => {
-                                    e.target.style.border =
-                                        "1px solid rgba(139, 92, 246, 0.4)"
-                                    e.target.style.boxShadow = "none"
-                                }}
-                            />
+                            <span style={{ fontSize: "18px", fontWeight: 700, color: "#fff" }}>
+                                {formatCurrency(monthlyRevenue)}
+                            </span>
+                        </div>
+                        <input
+                            className="roi-slider"
+                            type="range"
+                            min="1000"
+                            max="500000"
+                            step="1000"
+                            value={monthlyRevenue}
+                            onChange={(e) => setMonthlyRevenue(parseInt(e.target.value))}
+                        />
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                fontSize: "12px",
+                                color: "rgba(255,255,255,0.4)",
+                                marginTop: "4px",
+                            }}
+                        >
+                            <span>€1.000</span>
+                            <span>€500.000</span>
                         </div>
                     </div>
 
                     {/* Package Selection */}
-                    <div style={{ marginBottom: "1.75rem" }}>
-                        <label
-                            style={{
-                                display: "block",
-                                fontSize: "13px",
-                                fontWeight: 600,
-                                color: "#fff",
-                                marginBottom: "8px",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                            }}
-                        >
-                            {t.emailPackage}
-                        </label>
-                        <div
-                            className="packages-grid"
-                            style={{
-                                display: "grid",
-                                gridTemplateColumns: "repeat(3, 1fr)",
-                                gap: "0.75rem",
-                            }}
-                        >
-                            {[
-                                { price: 300, name: t.essential, automations: 3 },
-                                { price: 500, name: t.professional, automations: 5 },
-                                { price: 700, name: t.complete, automations: 8 },
-                            ].map(({ price, name, automations }) => (
-                                <button
-                                    key={price}
-                                    onClick={() => setSystemPrice(price)}
-                                    className="package-btn"
-                                    style={{
-                                        position: "relative",
-                                        padding: "1rem",
-                                        background:
-                                            systemPrice === price
-                                                ? "linear-gradient(135deg, #8b5cf6, #a855f7)"
-                                                : "rgba(0, 0, 0, 0.3)",
-                                        border:
-                                            systemPrice === price
-                                                ? "2px solid #a855f7"
-                                                : "1px solid rgba(139, 92, 246, 0.2)",
-                                        borderRadius: "12px",
-                                        cursor: "pointer",
-                                        textAlign: "center",
-                                        transition: "all 0.3s",
-                                        overflow: "hidden",
-                                    }}
-                                >
-                                    {systemPrice === price && (
-                                        <div
-                                            style={{
-                                                position: "absolute",
-                                                top: 0,
-                                                right: 0,
-                                                background: "rgba(255, 255, 255, 0.2)",
-                                                color: "#fff",
-                                                fontSize: "10px",
-                                                fontWeight: 700,
-                                                padding: "4px 8px",
-                                                borderBottomLeftRadius: "8px",
-                                            }}
-                                        >
-                                            ✓
-                                        </div>
-                                    )}
-                                    <div
-                                        style={{
-                                            fontSize: "11px",
-                                            fontWeight: 600,
-                                            color: "#fff",
-                                            marginBottom: "6px",
-                                            textTransform: "uppercase",
-                                            letterSpacing: "0.5px",
-                                        }}
-                                    >
-                                        {automations} Automations
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "24px",
-                                            fontWeight: 700,
-                                            color: "#fff",
-                                            marginBottom: "2px",
-                                        }}
-                                    >
-                                        €{price}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "12px",
-                                            color:
-                                                systemPrice === price
-                                                    ? "rgba(255, 255, 255, 0.8)"
-                                                    : "rgba(255, 255, 255, 0.5)",
-                                            fontWeight: 500,
-                                        }}
-                                    >
-                                        {name}
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Slider */}
-                    <div>
+                    <div style={{ marginBottom: "2rem" }}>
                         <div
                             style={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                alignItems: "center",
-                                marginBottom: "12px",
+                                alignItems: "baseline",
+                                marginBottom: "4px",
                             }}
                         >
-                            <label
-                                style={{
-                                    fontSize: "13px",
-                                    fontWeight: 600,
-                                    color: "#fff",
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.5px",
-                                }}
-                            >
-                                {t.salesIncrease}
-                            </label>
-                            <div
-                                style={{
-                                    background: "linear-gradient(135deg, #8b5cf6, #a855f7)",
-                                    padding: "6px 16px",
-                                    borderRadius: "20px",
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        fontSize: "18px",
-                                        fontWeight: 700,
-                                        color: "#fff",
-                                    }}
-                                >
-                                    {growthPercentage}%
-                                </span>
-                            </div>
+                            <span style={{ fontSize: "16px", fontWeight: 600, color: "#fff" }}>
+                                {t.emailPackage}:
+                            </span>
+                            <span style={{ fontSize: "16px", fontWeight: 600, color: "#a855f7" }}>
+                                {selectedPackage.automations} {t.automations} · €{selectedPackage.price}
+                            </span>
                         </div>
                         <input
+                            className="roi-slider"
                             type="range"
-                            min="10"
-                            max="20"
-                            value={growthPercentage}
-                            onChange={(e) =>
-                                setGrowthPercentage(parseInt(e.target.value))
-                            }
-                            style={{
-                                width: "100%",
-                                height: "6px",
-                                borderRadius: "3px",
-                                background:
-                                    "linear-gradient(90deg, #8b5cf6, #a855f7)",
-                                outline: "none",
-                                cursor: "pointer",
-                            }}
+                            min="0"
+                            max="2"
+                            step="1"
+                            value={PACKAGES.findIndex((p) => p.price === systemPrice)}
+                            onChange={(e) => setSystemPrice(PACKAGES[parseInt(e.target.value)].price)}
                         />
                         <div
                             style={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                fontSize: "11px",
-                                color: "rgba(255, 255, 255, 0.4)",
-                                marginTop: "8px",
-                                fontWeight: 500,
+                                fontSize: "12px",
+                                color: "rgba(255,255,255,0.4)",
+                                marginTop: "4px",
+                            }}
+                        >
+                            {PACKAGES.map((pkg) => (
+                                <span key={pkg.key}>
+                                    {pkg.automations} aut.
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Sales Increase Slider */}
+                    <div style={{ marginBottom: "2rem" }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "baseline",
+                                marginBottom: "4px",
+                            }}
+                        >
+                            <span style={{ fontSize: "16px", fontWeight: 600, color: "#fff" }}>
+                                {t.salesIncrease}:
+                            </span>
+                            <span style={{ fontSize: "18px", fontWeight: 700, color: "#fff" }}>
+                                {growthPercentage}%
+                            </span>
+                        </div>
+                        <input
+                            className="roi-slider"
+                            type="range"
+                            min="10"
+                            max="20"
+                            step="1"
+                            value={growthPercentage}
+                            onChange={(e) => setGrowthPercentage(parseInt(e.target.value))}
+                        />
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                fontSize: "12px",
+                                color: "rgba(255,255,255,0.4)",
+                                marginTop: "4px",
                             }}
                         >
                             <span>10%</span>
@@ -483,288 +288,87 @@ export default function SimpleROICalculator(props: Props) {
                     </div>
                 </div>
 
-                {/* Results Section */}
+                {/* Right: Results */}
                 <div
                     style={{
-                        background: "linear-gradient(135deg, rgba(20, 20, 30, 0.9), rgba(30, 30, 40, 0.8))",
-                        backdropFilter: "blur(24px)",
-                        border: "1px solid rgba(139, 92, 246, 0.3)",
-                        borderRadius: "20px",
+                        background: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        borderRadius: "16px",
                         padding: "2rem",
-                        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
                     }}
                 >
-                    <div
+                    <h2
                         style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            marginBottom: "2rem",
-                            paddingBottom: "1rem",
-                            borderBottom: "1px solid rgba(139, 92, 246, 0.2)",
+                            fontSize: "26px",
+                            fontWeight: 700,
+                            color: "#fff",
+                            margin: "0 0 1.5rem 0",
+                            lineHeight: 1.3,
                         }}
                     >
-                        <div
-                            style={{
-                                width: "8px",
-                                height: "32px",
-                                background: "linear-gradient(180deg, #8b5cf6, #a855f7)",
-                                borderRadius: "4px",
-                            }}
-                        />
-                        <h3
-                            style={{
-                                fontSize: "18px",
-                                fontWeight: 700,
-                                color: "#fff",
-                                margin: 0,
-                            }}
-                        >
-                            {t.roiResults}
-                        </h3>
+                        {t.resultsTitle}{" "}
+                        <span style={{ color: "#a855f7" }}>{t.resultsHighlight}</span>
+                    </h2>
+
+                    <div className="roi-result-row">
+                        <span style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
+                            {t.emailPackage}:
+                        </span>
+                        <span style={{ fontSize: "15px", fontWeight: 700, color: "#10b981" }}>
+                            {selectedPackage.automations} {t.automations}
+                        </span>
                     </div>
 
-                    {!roiData ? (
-                        <div
+                    <div className="roi-result-row">
+                        <span style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
+                            {t.monthlyInvestment}:
+                        </span>
+                        <span style={{ fontSize: "15px", fontWeight: 700, color: "#f59e0b" }}>
+                            {selectedPackage.price} €
+                        </span>
+                    </div>
+
+                    <div className="roi-result-row">
+                        <span style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
+                            {t.increase}:
+                        </span>
+                        <span style={{ fontSize: "15px", fontWeight: 700, color: "#fff" }}>
+                            {growthPercentage}%
+                        </span>
+                    </div>
+
+                    <div className="roi-result-row">
+                        <span style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
+                            {t.monthlyGain}:
+                        </span>
+                        <span style={{ fontSize: "16px", fontWeight: 700, color: "#10b981" }}>
+                            {formatCurrency(results.monthlyIncrease)}
+                        </span>
+                    </div>
+
+                    <div className="roi-result-row">
+                        <span style={{ fontSize: "15px", color: "rgba(255,255,255,0.75)" }}>
+                            {t.yearlyProjection}:
+                        </span>
+                        <span style={{ fontSize: "16px", fontWeight: 700, color: "#10b981" }}>
+                            {formatCurrency(results.yearlyIncrease)}
+                        </span>
+                    </div>
+
+                    <div className="roi-result-row">
+                        <span style={{ fontSize: "18px", fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
+                            {t.roi}:
+                        </span>
+                        <span
                             style={{
-                                textAlign: "center",
-                                padding: "3rem 1rem",
+                                fontSize: "28px",
+                                fontWeight: 800,
+                                color: "#a855f7",
                             }}
                         >
-                            <h4
-                                style={{
-                                    fontSize: "18px",
-                                    fontWeight: 600,
-                                    color: "rgba(255, 255, 255, 0.7)",
-                                    marginBottom: "0.5rem",
-                                }}
-                            >
-                                {t.enterRevenue}
-                            </h4>
-                            <p
-                                style={{
-                                    color: "rgba(255, 255, 255, 0.5)",
-                                    fontSize: "14px",
-                                }}
-                            >
-                                {t.discover}
-                            </p>
-                        </div>
-                    ) : (
-                        <>
-                            {/* ROI Cards Grid */}
-                            <div
-                                style={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(2, 1fr)",
-                                    gap: "1rem",
-                                    marginBottom: "1.5rem",
-                                }}
-                            >
-                                {[
-                                    { period: t.oneMonth, data: roiData.oneMonth },
-                                    {
-                                        period: t.sixMonths,
-                                        data: roiData.sixMonths,
-                                    },
-                                    { period: t.oneYear, data: roiData.oneYear },
-                                    {
-                                        period: t.twoYears,
-                                        data: roiData.twoYears,
-                                    },
-                                ].map(({ period, data }) => (
-                                    <div
-                                        key={period}
-                                        style={{
-                                            background: "rgba(0, 0, 0, 0.3)",
-                                            padding: "1.5rem",
-                                            borderRadius: "12px",
-                                            border:
-                                                "1px solid rgba(139, 92, 246, 0.2)",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                fontSize: "14px",
-                                                fontWeight: 600,
-                                                color: "rgba(255, 255, 255, 0.7)",
-                                                marginBottom: "0.5rem",
-                                            }}
-                                        >
-                                            {period}
-                                        </div>
-                                        <div
-                                            style={{
-                                                fontSize: "28px",
-                                                fontWeight: 700,
-                                                color: getROIColor(data.roi),
-                                                marginBottom: "0.5rem",
-                                                wordBreak: "break-word",
-                                                overflowWrap: "break-word",
-                                            }}
-                                        >
-                                            {formatPercentage(data.roi)}
-                                        </div>
-                                        <div
-                                            style={{
-                                                fontSize: "13px",
-                                                color: "rgba(255, 255, 255, 0.6)",
-                                                wordBreak: "break-word",
-                                                overflowWrap: "break-word",
-                                            }}
-                                        >
-                                            {t.profit}: €{formatNumber(data.profit)}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Summary Cards */}
-                            <div
-                                className="summary-cards-grid"
-                                style={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3, 1fr)",
-                                    gap: "1rem",
-                                }}
-                            >
-                                {/* Investment */}
-                                <div
-                                    style={{
-                                        background:
-                                            "linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1))",
-                                        padding: "1.25rem",
-                                        borderRadius: "12px",
-                                        border: "1px solid rgba(16, 185, 129, 0.3)",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            fontSize: "12px",
-                                            fontWeight: 600,
-                                            color: "#10b981",
-                                            marginBottom: "0.5rem",
-                                        }}
-                                    >
-                                        {t.investment}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "22px",
-                                            fontWeight: 700,
-                                            color: "#10b981",
-                                            marginBottom: "0.25rem",
-                                            wordBreak: "break-word",
-                                            overflowWrap: "break-word",
-                                        }}
-                                    >
-                                        €{systemPrice}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "12px",
-                                            color: "rgba(16, 185, 129, 0.8)",
-                                        }}
-                                    >
-                                        {t.setupOnly}
-                                    </div>
-                                </div>
-
-                                {/* Return */}
-                                <div
-                                    style={{
-                                        background:
-                                            "linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1))",
-                                        padding: "1.25rem",
-                                        borderRadius: "12px",
-                                        border: "1px solid rgba(139, 92, 246, 0.3)",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            fontSize: "12px",
-                                            fontWeight: 600,
-                                            color: "#8b5cf6",
-                                            marginBottom: "0.5rem",
-                                        }}
-                                    >
-                                        {t.returnYear}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "22px",
-                                            fontWeight: 700,
-                                            color: "#8b5cf6",
-                                            marginBottom: "0.25rem",
-                                            wordBreak: "break-word",
-                                            overflowWrap: "break-word",
-                                        }}
-                                    >
-                                        €{formatNumber(roiData.oneYear.profit)}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "12px",
-                                            color: "rgba(139, 92, 246, 0.8)",
-                                            wordBreak: "break-word",
-                                            overflowWrap: "break-word",
-                                        }}
-                                    >
-                                        {formatPercentage(roiData.oneYear.roi)}
-                                    </div>
-                                </div>
-
-                                {/* Payback */}
-                                <div
-                                    style={{
-                                        background:
-                                            "linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(192, 132, 252, 0.1))",
-                                        padding: "1.25rem",
-                                        borderRadius: "12px",
-                                        border: "1px solid rgba(168, 85, 247, 0.3)",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            fontSize: "12px",
-                                            fontWeight: 600,
-                                            color: "#a855f7",
-                                            marginBottom: "0.5rem",
-                                        }}
-                                    >
-                                        {t.payback}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "22px",
-                                            fontWeight: 700,
-                                            color: "#a855f7",
-                                            marginBottom: "0.25rem",
-                                            wordBreak: "break-word",
-                                            overflowWrap: "break-word",
-                                        }}
-                                    >
-                                        {roiData.oneMonth.monthsToBreakEven}{" "}
-                                        {roiData.oneMonth.monthsToBreakEven === 1
-                                            ? t.month
-                                            : t.months}
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: "12px",
-                                            color: "rgba(168, 85, 247, 0.8)",
-                                        }}
-                                    >
-                                        {t.month}
-                                    </div>
-                                </div>
-                            </div>
-                        </>
-                    )}
+                            {formatROI(results.roi)}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
